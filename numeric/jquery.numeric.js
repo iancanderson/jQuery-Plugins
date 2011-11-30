@@ -4,7 +4,7 @@
  * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
  * 
- * Version 1.3
+ * Version 1.3.1
  * Demo: http://www.texotela.co.uk/code/jquery/numeric/
  *
  */
@@ -93,10 +93,11 @@ $.fn.numeric.keypress = function(e)
 	// if a number was not pressed
 	if(key < 48 || key > 57)
 	{
+	  var value = $(this).val();
 		/* '-' only allowed at start and if negative numbers allowed */
-		if(this.value.indexOf("-") != 0 && negative && key == 45 && (this.value.length == 0 || ($.fn.getSelectionStart(this)) == 0)) return true;
+		if(value.indexOf("-") != 0 && negative && key == 45 && (value.length == 0 || ($.fn.getSelectionStart(this)) == 0)) return true;
 		/* only one decimal separator allowed */
-		if(decimal && key == decimal.charCodeAt(0) && this.value.indexOf(decimal) != -1)
+		if(decimal && key == decimal.charCodeAt(0) && value.indexOf(decimal) != -1)
 		{
 			allow = false;
 		}
@@ -137,7 +138,7 @@ $.fn.numeric.keypress = function(e)
 		// if key pressed is the decimal and it is not already in the field
 		if(decimal && key == decimal.charCodeAt(0))
 		{
-			if(this.value.indexOf(decimal) == -1)
+			if(value.indexOf(decimal) == -1)
 			{
 				allow = true;
 			}
@@ -170,8 +171,8 @@ $.fn.numeric.keypress = function(e)
 
 $.fn.numeric.keyup = function(e)
 {
-	var val = this.value;
-	if(val.length > 0)
+	var val = $(this).value;
+	if(val && val.length > 0)
 	{
 		// get carat (cursor) position
 		var carat = $.fn.getSelectionStart(this);
