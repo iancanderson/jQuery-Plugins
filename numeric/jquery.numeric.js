@@ -19,7 +19,7 @@
  *
  * @name     numeric
  * @param    config      { decimal : "." , negative : true }
- * @param    callback     A function that runs if the number is not valid (fires onblur)
+ * @param    callback     A function that runs if the keypress is not valid
  * @author   Sam Collett (http://www.texotela.co.uk)
  * @example  $(".numeric").numeric();
  * @example  $(".numeric").numeric(","); // use , as separater
@@ -64,7 +64,7 @@ $.fn.numeric = function(config, callback)
   var scale = (typeof config.scale) == "number" ? config.scale : -1;
   var precision = (typeof config.precision) == "number" ? config.precision : -1;
   // set data and methods
-  return this.data("numeric.decimal", decimal).data("numeric.negative", negative).data("numeric.callback", callback).data("numeric.scale", scale).data("numeric.precision", precision).keypress($.fn.numeric.keypress).keyup($.fn.numeric.keyup).blur($.fn.numeric.blur);
+  return this.data("numeric.decimal", decimal).data("numeric.negative", negative).data("numeric.callback", callback).data("numeric.scale", scale).data("numeric.precision", precision).keypress($.fn.numeric.keypress).keyup($.fn.numeric.keyup);
 }
 
 $.fn.numeric.keypress = function(e)
@@ -194,6 +194,11 @@ $.fn.numeric.keypress = function(e)
       }
     }
   }
+  if(!allow)
+  {
+    var callback = $.data(this, "numeric.callback");
+    callback.apply(this);
+  }
   return allow;
 }
 
@@ -286,24 +291,9 @@ $.fn.numeric.keyup = function(e)
   }
 }
 
-$.fn.numeric.blur = function()
-{
-  var decimal = $.data(this, "numeric.decimal");
-  var callback = $.data(this, "numeric.callback");
-  var val = this.value;
-  if(val != "")
-  {
-    var re = new RegExp("^\\d+$|\\d*" + decimal + "\\d+");
-    if(!re.exec(val))
-    {
-      callback.apply(this);
-    }
-  }
-}
-
 $.fn.removeNumeric = function()
 {
-  return this.data("numeric.decimal", null).data("numeric.negative", null).data("numeric.callback", null).unbind("keypress", $.fn.numeric.keypress).unbind("blur", $.fn.numeric.blur);
+  return this.data("numeric.decimal", null).data("numeric.negative", null).data("numeric.callback", null).unbind("keypress", $.fn.numeric.keypress);
 }
 
 // Based on code from http://javascript.nwbox.com/cursor_position/ (Diego Perini <dperini@nwbox.com>)
